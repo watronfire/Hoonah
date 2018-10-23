@@ -19,7 +19,6 @@ public class MoveableBox extends Rectangle {
         heldDY = 0;
     }
 
-
     @Override
     public Rectangle setPosition( float x, float y ) {
         if( isHeld ) {
