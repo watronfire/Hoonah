@@ -2,13 +2,13 @@ package com.nate.hoonah.entities;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public class MoveableBox extends Rectangle {
+public class MovableBox extends Rectangle {
     private boolean isHeld;
     private float heldDX;
     private float heldDY;
 
 
-    public MoveableBox( float x, float y, float width, float height ) {
+    public MovableBox( float x, float y, float width, float height ) {
         this.x = x;
         this.y = y;
         this.width = width;

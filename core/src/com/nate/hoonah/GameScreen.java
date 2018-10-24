@@ -8,23 +8,22 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.nate.hoonah.entities.MoveableBox;
-import com.nate.hoonah.managers.MoveableBoxManager;
+import com.nate.hoonah.entities.MovableBox;
+import com.nate.hoonah.managers.MovableBoxManager;
 
 public class GameScreen implements Screen {
-    final Hoonah game;
+    private final Hoonah game;
 
     private OrthographicCamera camera;
-    private MoveableBox rect;
-    private MoveableBoxManager mbm;
+    private MovableBoxManager mbm;
 
     public GameScreen( final Hoonah game ) {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho( false, 800, 480 );
+        camera.setToOrtho( true );
 
-        mbm = new MoveableBoxManager( 3, camera.viewportWidth, camera.viewportHeight );
+        mbm = new MovableBoxManager( 3, camera.viewportWidth, camera.viewportHeight );
 
     }
 
@@ -40,27 +39,22 @@ public class GameScreen implements Screen {
 
         camera.update();
 
+        if( Gdx.input.isButtonPressed( Input.Buttons.LEFT ) ) {
+            mbm.click( Gdx.input.getX(), Gdx.input.getY() );
+        } else {
+            mbm.release();
+        }
 
-
-        //if( Gdx.input.isButtonPressed( Input.Buttons.LEFT ) ) {
-        //    // Mouse coordinates are y-down while screen coordinates are y-up. Why they wouldn't use the same coordinate
-        //    // system is beyond me.
-        //    if( rect.contains( Gdx.input.getX(), Gdx.graphics.getHeight() - 1 - Gdx.input.getY() ) && !rect.getHeldStatus() ) {
-        //        rect.click( Gdx.input.getX(), Gdx.graphics.getHeight() - 1 - Gdx.input.getY() );
-        //    }
-        //} else {
-        //    rect.release();
-        //}
-
-
-        //if( rect.getHeldStatus() ) {
-        //    rect.setPosition( Gdx.input.getX(), Gdx.graphics.getHeight() - 1 - Gdx.input.getY() );
-        //}
+        mbm.updatePosition( camera.viewportWidth, camera.viewportHeight );
 
         game.shapeRenderer.setProjectionMatrix( camera.combined );
         game.shapeRenderer.begin( ShapeRenderer.ShapeType.Filled );
-        game.shapeRenderer.setColor( Color.BLACK );
-        for( MoveableBox mb : mbm.getAllManagedBoxes() ) {
+        for( MovableBox mb : mbm.getAllManagedBoxes() ) {
+            if( mb.getHeldStatus() ) {
+                game.shapeRenderer.setColor( Color.GOLD );
+            } else {
+                game.shapeRenderer.setColor( Color.BLACK );
+            }
             game.shapeRenderer.rect( mb.getX(), mb.getY(), mb.getWidth(), mb.getHeight() );
         }
         game.shapeRenderer.end();
