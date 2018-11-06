@@ -3,11 +3,12 @@ package com.nate.hoonah;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.nate.hoonah.screens.GameScreen;
 
 
 public class Hoonah extends Game {
-	SpriteBatch batch;
-	ShapeRenderer shapeRenderer;
+	public SpriteBatch batch;
+	public ShapeRenderer shapeRenderer;
 
 	@Override
 	public void create () {

@@ -44,7 +44,11 @@ public class MovableBoxManager {
         return managedBoxes;
     }
 
-    private int checkHeldBox() {
+    public MovableBox getManagedBox( int index ) {
+        return managedBoxes.get( index );
+    }
+
+    public int checkHeldBox() {
         for( int i = 0; i < managedBoxes.size(); i += 1 ) {
             if( managedBoxes.get( i ).getHeldStatus() ) {
                 return i;
@@ -75,13 +79,19 @@ public class MovableBoxManager {
     public void updatePosition( float viewportWidth, float viewportHeight ) {
         int index = 0;
         for( MovableBox mb : managedBoxes ) {
-            if( !mb.getHeldStatus() ) {
+            if( !mb.getHeldStatus() && !mb.isInPosition() ) {
                 float gotoXPos = getInitialXPosition( BOX_SIZE, viewportWidth );
                 float gotoYpos = getInitialYPosition( index, managedBoxes.size(), BOX_SIZE, BOX_SPACE, viewportHeight );
-                float updatedXPos = Interpolation.linear.apply( mb.getX(), gotoXPos, 0.2f );
-                float updatedYPos = Interpolation.linear.apply( mb.getY(), gotoYpos, 0.2f );
+                if( Math.abs( gotoYpos - mb.getY() ) < 1 && Math.abs( gotoXPos -  mb.getX() ) < 1 ) {
+                    mb.setPosition( gotoXPos, gotoYpos );
+                    mb.setInPosition();
+                } else {
+                    float updatedXPos = Interpolation.linear.apply( mb.getX(), gotoXPos, 0.2f );
+                    float updatedYPos = Interpolation.linear.apply( mb.getY(), gotoYpos, 0.2f );
+                    mb.setPosition( updatedXPos, updatedYPos );
+                    System.out.println( "Updated!" );
+                }
 
-                mb.setPosition( updatedXPos, updatedYPos );
             }
             index += 1;
         }
