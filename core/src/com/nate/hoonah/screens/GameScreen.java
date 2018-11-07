@@ -4,15 +4,10 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.*;
 import com.nate.hoonah.Hoonah;
 import com.nate.hoonah.entities.MovableBox;
+import com.nate.hoonah.entities.PixmapBuilder;
 import com.nate.hoonah.managers.MovableBoxManager;
 
 public class GameScreen implements Screen {
@@ -20,9 +15,6 @@ public class GameScreen implements Screen {
 
     private OrthographicCamera camera;
     private MovableBoxManager mbm;
-    private BitmapFont font;
-    private Texture fontTex;
-    private TextureRegion rect;
 
     public GameScreen( final Hoonah game ) {
         this.game = game;
@@ -34,7 +26,6 @@ public class GameScreen implements Screen {
         camera.setToOrtho( true );
 
         mbm = new MovableBoxManager( 3, camera.viewportWidth, camera.viewportHeight );
-        font = new BitmapFont();
 
     }
 
@@ -60,20 +51,22 @@ public class GameScreen implements Screen {
 
         int heldStatus = mbm.checkHeldBox();
 
-        game.shapeRenderer.setProjectionMatrix( camera.combined );
-        game.shapeRenderer.begin( ShapeRenderer.ShapeType.Filled );
+        game.batch.setProjectionMatrix( camera.combined );
+        game.batch.begin();
+        Texture tex = getPixmapTexture( Color.BLACK );
+
         for( MovableBox mb : mbm.getAllManagedBoxes() ) {
             if( !mb.getHeldStatus() ) {
-                game.shapeRenderer.setColor( Color.BLACK );
-                game.shapeRenderer.rect( mb.getX(), mb.getY(), mb.getWidth(), mb.getHeight() );
+                game.batch.draw( tex, mb.getX(), mb.getY(), mb.getWidth(), mb.getHeight() );
             }
         }
+
+        tex = getPixmapTexture( new Color( 1, 0.84f, 0, 0.95f ) );
         if( heldStatus > -1 ) {
             MovableBox heldBox = mbm.getManagedBox( heldStatus );
-            game.shapeRenderer.setColor( new Color( 1, 0.84f, 0, 0.95f ) );
-            game.shapeRenderer.rect( heldBox.getX(), heldBox.getY(), heldBox.getWidth(), heldBox.getHeight() );
+            game.batch.draw( tex, heldBox.getX(), heldBox.getY(), heldBox.getWidth(), heldBox.getHeight() );
         }
-        game.shapeRenderer.end();
+        game.batch.end();
 
 
 
@@ -101,6 +94,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+
+    }
+
+    public Texture getPixmapTexture( Color color ) {
+        return new Texture( PixmapBuilder.getPixmapRectangle( 1, 1, color ) );
 
     }
 }
